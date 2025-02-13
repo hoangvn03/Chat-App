@@ -161,7 +161,5 @@ public class SignUpActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignUp.setVisibility(View.VISIBLE);
         }
-
-
     }
 }

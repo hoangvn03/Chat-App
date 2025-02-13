@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Preferencemanager {
+    //Quản lý dữ liệu người dùng
     private final SharedPreferences sharedPreferences;
     public Preferencemanager(Context context){
         sharedPreferences = context.getSharedPreferences(Constants.KEY_PREFERENCE_NAME,Context.MODE_PRIVATE);
@@ -23,7 +24,7 @@ public class Preferencemanager {
         editor.apply();
     }
 
-        public String getString(String key){
+    public String getString(String key){
         return sharedPreferences.getString(key,null);
     }
     public void clear(){
