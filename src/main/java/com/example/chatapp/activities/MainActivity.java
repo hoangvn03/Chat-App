@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void setListeners(){
         binding.imageSignOut.setOnClickListener(v->signOut());
+        binding.fabNewChat.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(),UsersActivity.class)));
     }
     private void loadUserDetails(){
         binding.textName.setText(preferencemanager.getString(Constants.KEY_NAME));
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         preferencemanager.getString(Constants.KEY_USER_ID)
                 );
         documentReference.update(Constants.KEY_FCM_TOKEN,token)
-                .addOnSuccessListener(unused -> showToast("Token cập nhật thành công"))
+//                .addOnSuccessListener(unused -> showToast("Token cập nhật thành công"))
                 .addOnFailureListener(e->showToast("Cập nhật Token thất bại"));
     }
     private void signOut(){
