@@ -1,5 +1,6 @@
 package com.example.chatapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.chatapp.adapters.UsersAdapter;
 import com.example.chatapp.databinding.ActivityUsersBinding;
+import com.example.chatapp.listeners.UserListener;
 import com.example.chatapp.models.User;
 import com.example.chatapp.ultilities.Constants;
 import com.example.chatapp.ultilities.Preferencemanager;
@@ -22,7 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends AppCompatActivity implements UserListener {
     private ActivityUsersBinding binding;
     private Preferencemanager preferencemanager;
 
@@ -70,7 +72,7 @@ public class UsersActivity extends AppCompatActivity {
 
                         }
                         if(users.size() >0){
-                            UsersAdapter usersAdapter= new UsersAdapter(users);
+                            UsersAdapter usersAdapter= new UsersAdapter(users,this);
                             binding.userRecyclerView.setAdapter(usersAdapter);
                             binding.userRecyclerView.setVisibility(View.VISIBLE);
                         }
@@ -85,5 +87,12 @@ public class UsersActivity extends AppCompatActivity {
     private void showErrorMessage(){
         binding.textErrorMessage.setText(String.format("s","Không có người dùng"));
         binding.textErrorMessage.setVisibility(View.VISIBLE);
+    }
+    @Override
+    public void  onUserClicked(User user){
+        Intent intent = new Intent(getApplicationContext(),ChatActivity.class);
+        intent.putExtra(Constants.KEY_USER,user);
+        startActivity(intent);
+        finish();
     }
 }

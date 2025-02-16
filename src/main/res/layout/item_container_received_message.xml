@@ -14,19 +14,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:riv_oval="true"
         />
+
     <TextView
         android:id="@+id/textMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_4sdp"
+        android:layout_marginStart="4dp"
         android:background="@drawable/background_received_message"
         android:padding="@dimen/_12sdp"
         android:textColor="@color/white"
         android:textSize="@dimen/_13ssp"
         app:layout_constraintStart_toEndOf="@id/imageProfile"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.75"
-        />
+        app:layout_constraintWidth_percent="0.75" />
+
     <TextView
         android:id="@+id/textDatetime"
         android:layout_width="0dp"
