@@ -98,6 +98,16 @@
             android:textColor="@color/primary"
             android:textSize="@dimen/_12ssp"
             android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/buttonSignInFace"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_face"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_dark"
 
+            />
     </LinearLayout>
 </ScrollView>

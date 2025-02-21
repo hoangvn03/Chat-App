@@ -16,6 +16,8 @@ public class Constants {
     public static  final  String KEY_RECEIVED_ID= "receivedId";
     public static  final  String KEY_MESSAGE = "message";
     public static  final  String KEY_TIMESTAMP = "timestamp";
+    public static  final  String KEY_IMAGE_FACE_REGISTERED = "faceRegistered";
+    public static  final  String KEY_EMBEDDING = "embedding";
 
 
 
