@@ -7,13 +7,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.chatapp.R;
 import com.example.chatapp.databinding.ActivityMainBinding;
 import com.example.chatapp.ultilities.Constants;
 import com.example.chatapp.ultilities.Preferencemanager;
@@ -21,7 +16,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import java.util.HashMap;
 
@@ -42,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         binding.imageSignOut.setOnClickListener(v->signOut());
         binding.fabNewChat.setOnClickListener(v->
                 startActivity(new Intent(getApplicationContext(),UsersActivity.class)));
+        binding.fabResFace.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(), RegisterFaceActivity.class)));
     }
     private void loadUserDetails(){
         binding.textName.setText(preferencemanager.getString(Constants.KEY_NAME));
