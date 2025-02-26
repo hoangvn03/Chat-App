@@ -1,6 +1,4 @@
 package com.example.chatapp.activities;
-
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -60,8 +58,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-public class RegisterFaceActivity extends AppCompatActivity {
+public class  RegisterFaceActivity extends AppCompatActivity {
     ImageView imgView;
     private ActivityRegisterFaceBinding binding;
     private Preferencemanager preferencemanager;

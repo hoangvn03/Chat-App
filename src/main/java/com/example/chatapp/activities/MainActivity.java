@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.opencv.android.OpenCVLoader;
+
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(OpenCVLoader.initDebug()) {
+            Log.d("LOADOPENCV", "Success");
+        }
+        else {
+            Log.d("LOADOPENCV", "Err");
+        }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         preferencemanager = new Preferencemanager(getApplicationContext());
@@ -73,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
         documentReference.update(updates)
                 .addOnSuccessListener(usused ->{
+                    Log.d("DEBUGSignOut", "UserID before sign out: " + preferencemanager.getString(Constants.KEY_USER_ID)); // Kiểm tra xem có thực sự bị xóa không
                     preferencemanager.clear();
+                    Log.d("DEBUGSignOut", "UserID after sign out: " + preferencemanager.getString(Constants.KEY_USER_ID)); // Kiểm tra xem có thực sự bị xóa không
                     startActivity(new Intent(getApplicationContext(),SignInActivity.class));
                     finish();
                 })
