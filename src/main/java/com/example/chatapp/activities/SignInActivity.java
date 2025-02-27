@@ -3,6 +3,8 @@ package com.example.chatapp.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatapp.databinding.ActivitySignInBinding;
 import com.example.chatapp.ultilities.Constants;
+import com.example.chatapp.ultilities.LastLoginManager;
 import com.example.chatapp.ultilities.Preferencemanager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,12 +23,13 @@ public class SignInActivity extends AppCompatActivity {
     //Biến này sẽ liên kết gọi vào file activity_sign_in.xml <=> ActivitySignInBinding
     private ActivitySignInBinding binding;
     private Preferencemanager preferenceManager;
-    private String saveEmail;
+    private LastLoginManager lastLoginManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //khởi tạo
         preferenceManager = new Preferencemanager(getApplicationContext());
+        lastLoginManager = new LastLoginManager(getApplicationContext());
         if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
@@ -34,6 +38,7 @@ public class SignInActivity extends AppCompatActivity {
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         //thiết lập bố cục
         setContentView(binding.getRoot());
+        changeInputGmail();
         setListeners();
     }
     private void setListeners(){
@@ -41,18 +46,39 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class)));
         binding.buttonSignIn.setOnClickListener(v->{
             if(isValidSignInDetail()){
-                saveEmail = binding.inputGmail.getText().toString();
-                Log.d("SaveEmail","Email da luu: "+saveEmail);
                 signIn();
             }
         });
-        binding.buttonSignInFace.setOnClickListener(v->
-                startActivity(new Intent(getApplicationContext(), RecognizeFaceActivity.class)));
+        binding.buttonSignInFace.setOnClickListener(v-> {
+            if (!binding.inputGmail.getText().toString().trim().isEmpty()
+                && Patterns.EMAIL_ADDRESS.matcher(binding.inputGmail.getText().toString()).matches()
+            )
+            {
+                startActivity(new Intent(getApplicationContext(), RecognizeFaceActivity.class));
+            }
+        });
+    }
+    private void changeInputGmail(){
+        binding.inputGmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                lastLoginManager.putString(Constants.KEY_LAST_EMAIL_LOGIN, s.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        binding.inputGmail.setText(lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN));
+//        Log.d("InputGmail1","input: "+lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN));
     }
     private void signIn(){
         loading(true);
         //Truy cập database bằng getInstace
         FirebaseFirestore database = FirebaseFirestore.getInstance();
+        lastLoginManager.putString(Constants.KEY_LAST_EMAIL_LOGIN,binding.inputGmail.getText().toString());
         //Truy cập vào bảng chứa "users" và lọc theo gmail mật khẩu
         database.collection(Constants.KEY_COLLECTION_USER)
                 .whereEqualTo(Constants.KEY_EMAIL,binding.inputGmail.getText().toString())

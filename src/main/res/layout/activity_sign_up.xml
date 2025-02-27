@@ -115,7 +115,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"
-                android:background="@color/primary"
+                android:backgroundTint="@color/primary"
                 app:cornerRadius="@dimen/_8sdp"/>
             <ProgressBar
                 android:id="@+id/progressBar"

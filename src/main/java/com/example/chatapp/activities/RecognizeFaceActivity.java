@@ -6,9 +6,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.chatapp.databinding.ActivityRecognizeFaceBinding;
 import com.example.chatapp.ultilities.Constants;
+import com.example.chatapp.ultilities.LastLoginManager;
 import com.example.chatapp.ultilities.Preferencemanager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,27 +22,30 @@ import org.opencv.core.Mat;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class RecognizeFaceActivity extends CameraActivity {
-    private SignInActivity signInActivity;
-    private MainActivity mainActivity;
     private ActivityRecognizeFaceBinding binding;
     private FaceRecognition faceRecognition;
     private Preferencemanager preferenceManager;
+    private LastLoginManager lastLoginManager;
     CameraBridgeViewBase cameraBridgeViewBase;
     Mat rgb,gray,transpose_gray,transpose_rgb;
     private Mat mRgba;
     private Mat mGray;
     private boolean isSignIn = false;
+    private boolean isEmbeddingReady = false;
+    private String embedding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityRecognizeFaceBinding.inflate(getLayoutInflater());
-        signInActivity = new SignInActivity();
-        mainActivity = new MainActivity();
         preferenceManager = new Preferencemanager(getApplicationContext());
+        lastLoginManager = new LastLoginManager(getApplicationContext());
+        getEmbeddingLastLogin();
+        Log.d("EmailLastLogin","Email: "+lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN));
         if(preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
@@ -62,14 +67,17 @@ public class RecognizeFaceActivity extends CameraActivity {
             public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
                 mRgba=inputFrame.rgba();
                 mGray=inputFrame.gray();
-                mRgba=faceRecognition.recognizeImage(mRgba);
-                if(faceRecognition.isFaceUser() == true){
-                    signIn();
-                    isSignIn = true;
-                    Log.d("LoginApp","Login successful: "+faceRecognition.isFaceUser());
-                }
-                else{
-                    Log.d("LoginApp","Login : "+faceRecognition.isFaceUser());
+                if (isEmbeddingReady) {
+                    mRgba = faceRecognition.recognizeImage(mRgba, embedding);
+                    if (faceRecognition.isFaceUser()) {
+                        signIn();
+                        isSignIn = true;
+                        Log.d("LoginApp", "Login successful: " + faceRecognition.isFaceUser());
+                    } else {
+                        Log.d("LoginApp", "Login : " + faceRecognition.isFaceUser());
+                    }
+                } else {
+                    Log.d("LoginApp", "Embedding not ready yet");
                 }
                 return mRgba;
             }
@@ -88,6 +96,26 @@ public class RecognizeFaceActivity extends CameraActivity {
             Log.d("CameraActivity","Model is not loaded");
         }
     }
+    private void getEmbeddingLastLogin(){
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_USER)
+                .whereEqualTo(Constants.KEY_EMAIL,lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN))
+                .get()
+                .addOnSuccessListener(task ->{
+                    if(!task.isEmpty()){
+                        embedding =  task.getDocuments().get(0).getString(Constants.KEY_EMBEDDING);
+                        isEmbeddingReady = true;
+                    }
+                    else{
+                        onBackPressed();
+                        showToast("Chưa đăng kí khuôn mặt .");
+                    }
+                });
+    }
+    private void showToast(String message){
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
     private void signIn(){
         if(isSignIn){
             return;
@@ -96,7 +124,7 @@ public class RecognizeFaceActivity extends CameraActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         //Truy cập vào bảng chứa "users" và lọc theo gmail mật khẩu
         database.collection(Constants.KEY_COLLECTION_USER)
-                .whereEqualTo(Constants.KEY_EMAIL,"nguyenngochoang2k3@gmail.com")
+                .whereEqualTo(Constants.KEY_EMAIL,lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN))
                 .get()
                 .addOnCompleteListener(task -> {
                     //Kiểm tra truy vấn thành công k ,đảm bảo kết quả truy vấn k rỗng, đảm bảo có 1 user trùng
@@ -116,8 +144,6 @@ public class RecognizeFaceActivity extends CameraActivity {
                     }
                     else{
                         Log.d("ErrSignIn","Failt");
-//                        loading(false);
-//                        showToast("Có lỗi khi đăng nhập");
                     }
                 });
     }
