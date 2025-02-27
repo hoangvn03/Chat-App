@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.chatapp.databinding.ActivitySignInBinding;
 import com.example.chatapp.databinding.ActivitySignUpBinding;
 import com.example.chatapp.ultilities.Constants;
+import com.example.chatapp.ultilities.LastLoginManager;
 import com.example.chatapp.ultilities.Preferencemanager;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -38,6 +39,7 @@ import java.util.regex.Pattern;
 public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
     private Preferencemanager preferencemanager;
+    private LastLoginManager lastLoginManager;
     private String encodedImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
         preferencemanager = new Preferencemanager(getApplicationContext());
+        lastLoginManager = new LastLoginManager(getApplicationContext());
         setListeners();
     }
     private void setListeners(){
@@ -82,6 +85,8 @@ public class SignUpActivity extends AppCompatActivity {
                     preferencemanager.putString(Constants.KEY_NAME,binding.inputName.getText().toString());
                     preferencemanager.putString(Constants.KEY_IMAGE,encodedImage);
                     preferencemanager.putString(Constants.KEY_EMBEDDING,null);
+                    lastLoginManager.putString(Constants.KEY_LAST_EMAIL_LOGIN,binding.inputGmail.getText().toString());
+
                     Intent intent  = new Intent(getApplicationContext(),MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

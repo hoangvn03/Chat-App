@@ -4,8 +4,10 @@ public class Constants {
     public static  final String KEY_COLLECTION_USER  ="users";
     public static  final String KEY_NAME  ="name";
     public static  final String KEY_EMAIL  ="email";
+    public static  final String KEY_LAST_EMAIL_LOGIN  ="lastEmail";
     public static  final String KEY_PASSWORD  ="password";
     public static  final String KEY_PREFERENCE_NAME  ="chatAppPreference";
+    public static  final String KEY_PREFERENCE_LAST_LOGIN  ="lastLoginPreference";
     public static  final String KEY_IS_SIGNED_IN  ="isSignedIn";
     public static  final String KEY_USER_ID  ="userId";
     public static  final String KEY_IMAGE  ="image";
@@ -16,7 +18,6 @@ public class Constants {
     public static  final  String KEY_RECEIVED_ID= "receivedId";
     public static  final  String KEY_MESSAGE = "message";
     public static  final  String KEY_TIMESTAMP = "timestamp";
-    public static  final  String KEY_IMAGE_FACE_REGISTERED = "faceRegistered";
     public static  final  String KEY_EMBEDDING = "embedding";
 
 
