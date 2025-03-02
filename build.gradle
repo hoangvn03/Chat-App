@@ -43,7 +43,6 @@ dependencies {
     implementation libs.firebase.messaging
     implementation libs.firebase.firestore
     implementation project(':sdk')
-//    implementation libs.litert.gpu
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

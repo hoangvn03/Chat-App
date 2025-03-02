@@ -45,15 +45,12 @@ public class SignInActivity extends AppCompatActivity {
         binding.textCreateNewAccount.setOnClickListener(v->
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class)));
         binding.buttonSignIn.setOnClickListener(v->{
-            if(isValidSignInDetail()){
+            if(isValidSignInDetail() && isValidSignInDetailPasswork()){
                 signIn();
             }
         });
         binding.buttonSignInFace.setOnClickListener(v-> {
-            if (!binding.inputGmail.getText().toString().trim().isEmpty()
-                && Patterns.EMAIL_ADDRESS.matcher(binding.inputGmail.getText().toString()).matches()
-            )
-            {
+            if(isValidSignInDetail()){
                 startActivity(new Intent(getApplicationContext(), RecognizeFaceActivity.class));
             }
         });
@@ -129,13 +126,16 @@ public class SignInActivity extends AppCompatActivity {
             showToast("Vui lòng nhập đúng định dạng gmail");
             return false;
         }
-        else if(binding.inputPassword.getText().toString().trim().isEmpty()){
-            showToast("Vui lòng nhập mật khẩu");
-            return false;
-        }
         else{
             return true;
         }
     }
-
+    private Boolean isValidSignInDetailPasswork() {
+        if (binding.inputPassword.getText().toString().trim().isEmpty()) {
+            showToast("Vui lòng nhập mật khẩu");
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
