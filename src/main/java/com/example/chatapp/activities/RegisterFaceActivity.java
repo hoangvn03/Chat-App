@@ -297,7 +297,7 @@ public class  RegisterFaceActivity extends AppCompatActivity {
                                         }
 //                                        Log.d("AnhBitMap","Bitmap anh cat:"+imageFace);
                                         binding.btDone.setVisibility(View.VISIBLE);
-//                                        imgView.setImageBitmap(multableBmp);
+                                        imgView.setImageBitmap(multableBmp);
                                     }
                                 })
                         .addOnFailureListener(
@@ -325,7 +325,7 @@ public class  RegisterFaceActivity extends AppCompatActivity {
             image.bottom = input.getHeight()-1;
         }
         Bitmap cropperFace =  Bitmap.createBitmap(input,image.left,image.top,image.width(),image.height());
-        imgView.setImageBitmap(resizeBitmap(cropperFace));
+//        imgView.setImageBitmap(resizeBitmap(cropperFace));
         float[] embedding = extractFaceEmbedding(cropperFace);
         // In ra embedding (hoặc lưu vào Firebase, v.v.)
         embeddingFace = Arrays.toString(embedding);

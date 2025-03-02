@@ -18,16 +18,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.opencv.android.CameraActivity;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class RecognizeFaceActivity extends CameraActivity {
     private ActivityRecognizeFaceBinding binding;
-    private FaceRecognition faceRecognition;
+    private RecognitionActivity recognitionActivity;
     private Preferencemanager preferenceManager;
     private LastLoginManager lastLoginManager;
     CameraBridgeViewBase cameraBridgeViewBase;
@@ -68,13 +68,13 @@ public class RecognizeFaceActivity extends CameraActivity {
                 mRgba=inputFrame.rgba();
                 mGray=inputFrame.gray();
                 if (isEmbeddingReady) {
-                    mRgba = faceRecognition.recognizeImage(mRgba, embedding);
-                    if (faceRecognition.isFaceUser()) {
+                    mRgba = recognitionActivity.recognizeImage(mRgba, embedding);
+                    if (recognitionActivity.isFaceUser()) {
                         signIn();
                         isSignIn = true;
-                        Log.d("LoginApp", "Login successful: " + faceRecognition.isFaceUser());
+                        Log.d("LoginApp", "Login successful: " + recognitionActivity.isFaceUser());
                     } else {
-                        Log.d("LoginApp", "Login : " + faceRecognition.isFaceUser());
+                        Log.d("LoginApp", "Login : " + recognitionActivity.isFaceUser());
                     }
                 } else {
                     Log.d("LoginApp", "Embedding not ready yet");
@@ -89,7 +89,7 @@ public class RecognizeFaceActivity extends CameraActivity {
         setPermission();
         try{
             int inputSize = 112;
-            faceRecognition = new FaceRecognition(getAssets(),RecognizeFaceActivity.this,"mobile_face_net.tflite",inputSize);
+            recognitionActivity = new RecognitionActivity(getAssets(),RecognizeFaceActivity.this,"mobile_face_net.tflite",inputSize);
         }
         catch (IOException e){
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class RecognizeFaceActivity extends CameraActivity {
                 .whereEqualTo(Constants.KEY_EMAIL,lastLoginManager.getString(Constants.KEY_LAST_EMAIL_LOGIN))
                 .get()
                 .addOnSuccessListener(task ->{
-                    if(!task.isEmpty()){
+                    if(!task.isEmpty() && task.getDocuments().get(0).getString(Constants.KEY_EMBEDDING) != null){
                         embedding =  task.getDocuments().get(0).getString(Constants.KEY_EMBEDDING);
                         isEmbeddingReady = true;
                     }
